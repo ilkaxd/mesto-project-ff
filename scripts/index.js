@@ -19,11 +19,11 @@ function creatCard(card, deleteFnc) {
 }
 
 // @todo: Функция удаления карточки
-function deleteFnc(card) {
+function deleteCard(card) {
     card.target.parentElement.remove();
 }
 
 // @todo: Вывести карточки на страницу
 initialCards.forEach(card => {
-    placesList.append(creatCard(card, deleteFnc));
+    placesList.append(creatCard(card, deleteCard));
 });
