@@ -19,8 +19,8 @@ function createCard(card, deleteFnc) {
 }
 
 // @todo: Функция удаления карточки
-function deleteCard(card) {
-    card.target.parentElement.remove();
+function deleteCard(event) {
+    event.target.closest('.card').remove();
 }
 
 // @todo: Вывести карточки на страницу
