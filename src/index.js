@@ -1,6 +1,14 @@
 import "./pages/index.css";
 
-import { getAboutMe, getInitialCards, patchProfile, postNewCard, patchAvatar, baseUser, headIsImage } from "./components/api.js";
+import {
+  getAboutMe,
+  getInitialCards,
+  patchProfile,
+  postNewCard,
+  patchAvatar,
+  baseUser,
+  headIsImage,
+} from "./components/api.js";
 import { initialCards } from "./components/cards.js";
 import { createCard, toggleLike, deleteCard } from "./components/card.js";
 import { openPopup, closePopup } from "./components/modal.js";
@@ -15,28 +23,31 @@ const avatarEditPopup = document.querySelector(".popup_type_edit_avatar");
 const avatarEditForm = document.forms["edit-avatar"];
 const avatarLinkInput = avatarEditForm.elements.link;
 const avatarLink = document.querySelector(".profile__image");
-const avatarSubmitBtn = avatarEditPopup.querySelector('.popup__button');
+const avatarSubmitBtn = avatarEditPopup.querySelector(".popup__button");
 
 const profileEditBtn = document.querySelector(".profile__edit-button");
 const editProfilePopup = document.querySelector(".popup_type_edit");
 const editProfileForm = document.forms["edit-profile"];
 const nameInput = editProfileForm.elements.name;
 const descriptionInput = editProfileForm.elements.description;
-const editProfileSubmitBtn = editProfilePopup.querySelector('.popup__button');
+const editProfileSubmitBtn = editProfilePopup.querySelector(".popup__button");
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
-const profileImage = document.querySelector('.profile__image');
+const profileImage = document.querySelector(".profile__image");
 
 const cardAddBtn = document.querySelector(".profile__add-button");
 const newCardPopup = document.querySelector(".popup_type_new-card");
 const newCardForm = document.forms["new-place"];
 const placeNameInput = newCardForm.elements["place-name"];
 const imageSrcInput = newCardForm.elements.link;
-const newCardSubmitBtn = newCardPopup.querySelector('.popup__button');
+const newCardSubmitBtn = newCardPopup.querySelector(".popup__button");
 
 const imagePopup = document.querySelector(".popup_type_image");
 const image = imagePopup.querySelector(".popup__image");
 const caption = imagePopup.querySelector(".popup__caption");
+
+const deletePopup = document.querySelector(".popup_type_remove_card");
+const deleteForm = document.forms["remove-card"];
 
 const popups = document.querySelectorAll(".popup");
 
@@ -53,10 +64,12 @@ enableValidation(validationConfig);
 
 // Настройки аватара
 avatarEditBtn.addEventListener("click", (evt) => {
-  avatarLinkInput.value = avatarLink.style.backgroundImage.slice(4, -1).replace(/"/g, "");;
+  avatarLinkInput.value = avatarLink.style.backgroundImage
+    .slice(4, -1)
+    .replace(/"/g, "");
   openPopup(avatarEditPopup);
   clearValidation(avatarEditForm, validationConfig);
-})
+});
 
 avatarEditForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
@@ -64,15 +77,15 @@ avatarEditForm.addEventListener("submit", (evt) => {
   avatarSubmitBtn.textContent = "Сохранение...";
 
   patchAvatar(avatarLinkInput.value)
-  .then((res) => {
-    avatarLink.style.backgroundImage = `url("${res.avatar}")`;
-  })
-  .catch((err) => console.log(err))
-  .finally(() => {
-    closePopup(avatarEditPopup);
-    avatarSubmitBtn.textContent = "Сохранить";
-  });
-})
+    .then((res) => {
+      avatarLink.style.backgroundImage = `url("${res.avatar}")`;
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      closePopup(avatarEditPopup);
+      avatarSubmitBtn.textContent = "Сохранить";
+    });
+});
 
 // Настройка профиля
 profileEditBtn.addEventListener("click", (evt) => {
@@ -88,15 +101,15 @@ editProfileForm.addEventListener("submit", (evt) => {
   editProfileSubmitBtn.textContent = "Сохранение...";
 
   patchProfile(nameInput.value, descriptionInput.value)
-  .then((res)=> {
-    profileTitle.textContent = res.name;
-    profileDescription.textContent = res.about;
-  })
-  .catch()
-  .finally(() => {
-    closePopup(editProfilePopup);
-    editProfileSubmitBtn.textContent = "Сохранить";
-  })
+    .then((res) => {
+      profileTitle.textContent = res.name;
+      profileDescription.textContent = res.about;
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      closePopup(editProfilePopup);
+      editProfileSubmitBtn.textContent = "Сохранить";
+    });
 });
 
 // Работа с карточками
@@ -111,23 +124,17 @@ newCardForm.addEventListener("submit", (evt) => {
   newCardSubmitBtn.textContent = "Сохранение...";
 
   postNewCard(placeNameInput.value, imageSrcInput.value)
-  .then((res) => {
-    placesList.prepend(
-      createCard(
-        res,
-        deleteCard,
-        toggleLike,
-        viewImagePopup,
-        res.owner
-      )
-    );
-  })
-  .catch()
-  .finally(() => {
-    newCardForm.reset();
-    closePopup(newCardPopup);
-    newCardSubmitBtn.textContent = "Сохранить";
-  })
+    .then((res) => {
+      placesList.prepend(
+        createCard(res, deleteCard, toggleLike, viewImagePopup, res.owner)
+      );
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      newCardForm.reset();
+      closePopup(newCardPopup);
+      newCardSubmitBtn.textContent = "Сохранить";
+    });
 });
 
 function viewImagePopup(card) {
@@ -150,25 +157,27 @@ popups.forEach((popup) => {
 });
 
 Promise.all([getAboutMe(), getInitialCards()])
-.then(([user, cards]) => {
-  profileTitle.textContent = user.name;
-  profileDescription.textContent = user.about;
-  profileImage.style.backgroundImage = `url("${user.avatar}")`;
+  .then(([user, cards]) => {
+    profileTitle.textContent = user.name;
+    profileDescription.textContent = user.about;
+    profileImage.style.backgroundImage = `url("${user.avatar}")`;
 
-  cards.forEach((card) => {
-    placesList.append(createCard(card, deleteCard, toggleLike, viewImagePopup, user));
+    cards.forEach((card) => {
+      placesList.append(
+        createCard(card, deleteCard, toggleLike, viewImagePopup, user)
+      );
+    });
   })
-})
-.catch((err) => {
-  console.error("Ошибка получения данных пользователя и карточек:", err)
-  
-  profileTitle.textContent = baseUser.name;
-  profileDescription.textContent = baseUser.about;
-  profileImage.style.backgroundImage = `url("${baseUser.avatar}")`;
+  .catch((err) => {
+    console.error("Ошибка получения данных пользователя и карточек:", err);
 
-  initialCards.forEach((card) => {
-    placesList.append(createCard(card, deleteCard, toggleLike, viewImagePopup, baseUser));
+    profileTitle.textContent = baseUser.name;
+    profileDescription.textContent = baseUser.about;
+    profileImage.style.backgroundImage = `url("${baseUser.avatar}")`;
+
+    initialCards.forEach((card) => {
+      placesList.append(
+        createCard(card, deleteCard, toggleLike, viewImagePopup, baseUser)
+      );
+    });
   });
-});
-
-console.log(headIsImage("https://w.forfun.com/fetch/56/5656d35727009cabea6ce79973a9702c.j1peg"));
