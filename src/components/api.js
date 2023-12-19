@@ -81,20 +81,6 @@ function patchAvatar(link) {
   .then((res) => getResponseData(res));
 }
 
-function headIsImage(url) {
-  return fetch(url, {
-    method: "HEAD",
-  })
-    .then((res) => {
-      if (res.ok){
-        return res;
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .then((res) => res.headers.get("content-type").startsWith("image"))
-    .catch((err) => false);
-}
-
 function getResponseData(res) {
   if (!res.ok) {
     return Promise.reject(`Ошибка: ${res.status}`); 
@@ -118,6 +104,5 @@ export {
   putLike,
   deleteLike,
   patchAvatar,
-  baseUser,
-  headIsImage,
+  baseUser
 };

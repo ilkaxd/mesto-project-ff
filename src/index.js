@@ -7,7 +7,6 @@ import {
   postNewCard,
   patchAvatar,
   baseUser,
-  headIsImage,
 } from "./components/api.js";
 import { initialCards } from "./components/cards.js";
 import { createCard, toggleLike, deleteCard } from "./components/card.js";
@@ -74,23 +73,17 @@ avatarEditForm.addEventListener("submit", (evt) => {
 
   const imgUrl = avatarLinkInput.value;
 
-  headIsImage(imgUrl)
-  .then(res => {
-    if (res) {
-      avatarSubmitBtn.textContent = "Сохранение...";
+  avatarSubmitBtn.textContent = "Сохранение...";
 
-      patchAvatar(imgUrl)
-        .then((res) => {
-          
-          avatarLink.style.backgroundImage = `url("${res.avatar}")`;
-          closePopup(avatarEditPopup);
-        })
-        .catch((err) => console.log(err))
-        .finally(() => {
-          avatarSubmitBtn.textContent = "Сохранить";
-        });
-    }
-  })
+  patchAvatar(imgUrl)
+    .then((res) => {
+      avatarLink.style.backgroundImage = `url("${res.avatar}")`;
+      closePopup(avatarEditPopup);
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      avatarSubmitBtn.textContent = "Сохранить";
+    });
 });
 
 // Настройка профиля
@@ -110,10 +103,10 @@ editProfileForm.addEventListener("submit", (evt) => {
     .then((res) => {
       profileTitle.textContent = res.name;
       profileDescription.textContent = res.about;
+      closePopup(editProfilePopup);
     })
     .catch((err) => console.log(err))
     .finally(() => {
-      closePopup(editProfilePopup);
       editProfileSubmitBtn.textContent = "Сохранить";
     });
 });
