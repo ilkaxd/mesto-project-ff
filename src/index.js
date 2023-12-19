@@ -64,9 +64,7 @@ enableValidation(validationConfig);
 
 // Настройки аватара
 avatarEditBtn.addEventListener("click", (evt) => {
-  avatarLinkInput.value = avatarLink.style.backgroundImage
-    .slice(4, -1)
-    .replace(/"/g, "");
+  avatarEditForm.reset();
   openPopup(avatarEditPopup);
   clearValidation(avatarEditForm, validationConfig);
 });
@@ -74,17 +72,25 @@ avatarEditBtn.addEventListener("click", (evt) => {
 avatarEditForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
 
-  avatarSubmitBtn.textContent = "Сохранение...";
+  const imgUrl = avatarLinkInput.value;
 
-  patchAvatar(avatarLinkInput.value)
-    .then((res) => {
-      avatarLink.style.backgroundImage = `url("${res.avatar}")`;
-    })
-    .catch((err) => console.log(err))
-    .finally(() => {
-      closePopup(avatarEditPopup);
-      avatarSubmitBtn.textContent = "Сохранить";
-    });
+  headIsImage(imgUrl)
+  .then(res => {
+    if (res) {
+      avatarSubmitBtn.textContent = "Сохранение...";
+
+      patchAvatar(imgUrl)
+        .then((res) => {
+          
+          avatarLink.style.backgroundImage = `url("${res.avatar}")`;
+          closePopup(avatarEditPopup);
+        })
+        .catch((err) => console.log(err))
+        .finally(() => {
+          avatarSubmitBtn.textContent = "Сохранить";
+        });
+    }
+  })
 });
 
 // Настройка профиля
@@ -128,11 +134,11 @@ newCardForm.addEventListener("submit", (evt) => {
       placesList.prepend(
         createCard(res, deleteCard, toggleLike, viewImagePopup, res.owner)
       );
+      newCardForm.reset();
+      closePopup(newCardPopup);
     })
     .catch((err) => console.log(err))
     .finally(() => {
-      newCardForm.reset();
-      closePopup(newCardPopup);
       newCardSubmitBtn.textContent = "Сохранить";
     });
 });

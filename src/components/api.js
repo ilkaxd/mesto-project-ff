@@ -11,23 +11,15 @@ const config = {
 function getAboutMe() {
   return fetch(`${config.baseURL}/users/me`, {
     headers: config.headers,
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  })
+  .then((res) => getResponseData(res));
 }
 
 function getInitialCards() {
   return fetch(`${config.baseURL}/cards`, {
     headers: config.headers,
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  })
+  .then((res) => getResponseData(res));
 }
 
 function patchProfile(name, description) {
@@ -38,12 +30,8 @@ function patchProfile(name, description) {
       name: name,
       about: description,
     }),
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  })
+  .then((res) => getResponseData(res));
 }
 
 function postNewCard(name, link) {
@@ -54,48 +42,32 @@ function postNewCard(name, link) {
       name: name,
       link: link,
     }),
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  })
+  .then((res) => getResponseData(res));
 }
 
 function deleteCard(cardId) {
   return fetch(`${config.baseURL}/cards/${cardId}`, {
     headers: config.headers,
     method: "DELETE",
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  })
+  .then((res) => getResponseData(res));
 }
 
 function putLike(cardId) {
   return fetch(`${config.baseURL}/cards/likes/${cardId}`, {
     headers: config.headers,
     method: "PUT",
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  })
+  .then((res) => getResponseData(res));
 }
 
 function deleteLike(cardId) {
   return fetch(`${config.baseURL}/cards/likes/${cardId}`, {
     headers: config.headers,
     method: "DELETE",
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  })
+  .then((res) => getResponseData(res));
 }
 
 function patchAvatar(link) {
@@ -105,25 +77,29 @@ function patchAvatar(link) {
     body: JSON.stringify({
       avatar: link,
     }),
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  })
+  .then((res) => getResponseData(res));
 }
 
 function headIsImage(url) {
   return fetch(url, {
     method: "HEAD",
-    "Content-Type": "application/json",
-    mode: "no-cors",
   })
     .then((res) => {
-      console.log(res);
-      return true;
+      if (res.ok){
+        return res;
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
     })
+    .then((res) => res.headers.get("content-type").startsWith("image"))
     .catch((err) => false);
+}
+
+function getResponseData(res) {
+  if (!res.ok) {
+    return Promise.reject(`Ошибка: ${res.status}`); 
+  }
+  return res.json();
 }
 
 const baseUser = {

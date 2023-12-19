@@ -67,6 +67,7 @@
               required
               minlength="2"
               maxlength="40"
+              pattern="^[a-zA-Zа-яА-ЯёЁ\-\s]+$"
               data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
             />
             <span class="name-error"></span>
@@ -78,6 +79,7 @@
               required
               minlength="2"
               maxlength="200"
+              pattern="^[a-zA-Zа-яА-ЯёЁ\-\s]+$"
               data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
             />
             <span class="description-error"></span>
@@ -100,6 +102,7 @@
               minlength="2"
               maxlength="30"
               required
+              pattern="^[a-zA-Zа-яА-ЯёЁ\-\s]+$"
               data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
             />
             <span class="place-name-error"></span>
@@ -145,7 +148,7 @@
       </div>
     </div>
     <div class="popup popup_type_remove_card popup_is-animated">
-      <div class="popup__content">
+      <div class="popup__content popup__content-remove">
         <button type="button" class="popup__close"></button>
         <h3 class="popup__title">Вы уверены?</h3>
         <form class="popup__form" name="remove-card" novalidate>

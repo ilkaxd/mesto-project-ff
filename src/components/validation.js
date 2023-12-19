@@ -1,5 +1,3 @@
-const regex = /^[a-zа-яё\s\-]*$/i;
-
 export function enableValidation(validationConfig) {
   const forms = Array.from(
     document.querySelectorAll(validationConfig.formSelector)
@@ -23,8 +21,10 @@ export function enableValidation(validationConfig) {
 function toggleButtonState(inputList, buttonElement, validationConfig) {
   if (hasInvalidInput(inputList)) {
     buttonElement.classList.add(validationConfig.inactiveButtonClass);
+    buttonElement.disabled = true;
   } else {
     buttonElement.classList.remove(validationConfig.inactiveButtonClass);
+    buttonElement.disabled = false;
   }
 }
 
@@ -33,10 +33,7 @@ function hasInvalidInput(inputList) {
 }
 
 function checkInputValidity(formElement, inputElement, validationConfig) {
-  if (
-    ["name", "description", "place-name"].includes(inputElement.name) &&
-    !regex.test(inputElement.value)
-  ) {
+  if (inputElement.validity.patternMismatch){
     inputElement.setCustomValidity(inputElement.dataset.errorMessage);
   } else {
     inputElement.setCustomValidity("");
@@ -76,5 +73,8 @@ export function clearValidation(form, validationConfig) {
   const formInputs = Array.from(
     form.querySelectorAll(validationConfig.inputSelector)
   );
+  const formBtn = form.querySelector(validationConfig.submitButtonSelector);
+
   formInputs.forEach((input) => hideInputError(form, input, validationConfig));
+  toggleButtonState(formInputs, formBtn, validationConfig)
 }
